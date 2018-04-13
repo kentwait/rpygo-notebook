@@ -8,27 +8,24 @@ LABEL maintainer="Kent Kawashima <kentkawashima@gmail.com>"
 # Conda variables
 ENV CONDA_PYTHON_VERSION=3 \
     CONDA_DIR=/opt/conda \
-    CONDA_VERSION=latest \
-    CONDA_ARCH=Linux-x86_64 \
+    CONDA_VERSION="latest" \
+    CONDA_ARCH="Linux-x86_64" \
 # Golang variables
     GOLANG_VERSION=1.10.1 \
-    GOLANG_ARCH=linux-amd64 \
-# Custom paths
-    NOTEBOOK_DIR=/notebooks \
-    CUSTOM_LIB_DIR=/root
-
+    GOLANG_ARCH="linux-amd64" \
 # Additional paths
-ENV PYTHON_LIB_PATH=${CUSTOM_LIB_DIR}/python \
-    R_LIB_PATH=${CUSTOM_LIB_DIR}/r \
-    GOLANG_LIB_PATH=${CUSTOM_LIB_DIR}/go/custom \
-    GOLANG_INTERNAL_LIB_PATH=${CUSTOM_LIB_DIR}/go/internal
-
+    NOTEBOOK_DIR=/notebooks \
+    PYTHON_LIB_PATH=/root/python \
+    R_LIB_PATH=/root/r \
+    GOLANG_LIB_PATH=/root/go/custom \
+    GOLANG_INTERNAL_LIB_PATH=/root/go/internal \
+    GOROOT=/usr/local/go
+    
 # Paths
-ENV PYTHONPATH=${PYTHON_LIB_PATH}
-ENV GOROOT=/usr/local/go \
-    GOPATH=${GOLANG_INTERNAL_LIB_PATH}:${GOLANG_LIB_PATH}
+ENV PYTHONPATH=${PYTHON_LIB_PATH} \
+    GOPATH=${GOLANG_INTERNAL_LIB_PATH}:${GOLANG_LIB_PATH} \
 # ENV R_LIBS_SITE=${R_LIB_PATH}
-ENV PATH=${PYTHON_LIB_PATH}:${R_LIB_PATH}:${CONDA_DIR}/bin:${PATH}:${GOROOT}/bin:${GOLANG_INTERNAL_LIB_PATH}/bin:${GOLANG_LIB_PATH}/bin
+    PATH=${PYTHON_LIB_PATH}:${R_LIB_PATH}:${CONDA_DIR}/bin:${PATH}:${GOROOT}/bin:${GOLANG_INTERNAL_LIB_PATH}/bin:${GOLANG_LIB_PATH}/bin
 
 USER root
 
@@ -36,7 +33,7 @@ WORKDIR /tmp
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
     add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/' && \
     apt-get update --quiet --fix-missing && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         build-essential \
         ca-certificates \
         wget \
@@ -49,7 +46,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD5
     # Install Miniconda
     wget -q "https://repo.continuum.io/miniconda/Miniconda${CONDA_PYTHON_VERSION}-${CONDA_VERSION}-${CONDA_ARCH}.sh" -O /tmp/installer.sh && \
     bash installer.sh -b -p ${CONDA_DIR} && \
-    mkdir -p ${CUSTOM_LIB_DIR} && \   
     mkdir -p ${PYTHON_LIB_PATH} && \   
     mkdir -p ${R_LIB_PATH} && \   
     mkdir -p ${GOLANG_LIB_PATH} && \
@@ -61,26 +57,21 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD5
     mkdir -p ${GOLANG_LIB_PATH}/src && \
     mkdir -p ${GOLANG_LIB_PATH}/bin && \
     mkdir -p ${GOLANG_INTERNAL_LIB_PATH}/src && \
-    mkdir -p ${GOLANG_INTERNAL_LIB_PATH}/bin
-
-# Install Jupyter
-RUN conda update --yes -n base conda && \
+    mkdir -p ${GOLANG_INTERNAL_LIB_PATH}/bin && \
+    # Install Jupyter
+    conda update --yes -n base conda && \
     conda install --yes \
         ipython \
         jupyter && \
-    conda clean --all --yes && \
-    mkdir -p ${NOTEBOOK_DIR} 
-
-# Set token as empty string - also disables authenticating token for XSRF protection
-RUN jupyter notebook --generate-config && \
+    mkdir -p ${NOTEBOOK_DIR} && \
+    # Set token as empty string - also disables authenticating token for XSRF protection
+    jupyter notebook --generate-config && \
     echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py && \
     echo "c.NotebookApp.password_required = False" >> /root/.jupyter/jupyter_notebook_config.py && \
     echo "c.NotebookApp.allow_root = True" >> /root/.jupyter/jupyter_notebook_config.py && \
-    echo "c.NotebookApp.open_browser = False" >> /root/.jupyter/jupyter_notebook_config.py    
-
-# Install IRKernel and gophernotes
-WORKDIR /tmp
-RUN R -e "install.packages(c('crayon', 'pbdZMQ', 'devtools'))" && \
+    echo "c.NotebookApp.open_browser = False" >> /root/.jupyter/jupyter_notebook_config.py && \ 
+    # Install IRKernel and gophernotes
+    R -e "install.packages(c('crayon', 'pbdZMQ', 'devtools'))" && \
     R -e "devtools::install_github(paste0('IRkernel/', c('repr', 'IRdisplay', 'IRkernel')))" && \
     R -e "IRkernel::installspec(user = FALSE)" && \
     go get -u github.com/gopherdata/gophernotes && \

@@ -5,11 +5,9 @@ LABEL version="1.0"
 LABEL maintainer="Kent Kawashima <kentkawashima@gmail.com>"
 
 ENV NOTEBOOK_DIR=/notebooks \
-    CUSTOM_LIB_DIR=/root
-ENV PYTHON_LIB_PATH=${CUSTOM_LIB_DIR}/python \
-    R_LIB_PATH=${CUSTOM_LIB_DIR}/r \
-    GOLANG_LIB_PATH=${CUSTOM_LIB_DIR}/go/custom \
-    GOLANG_INTERNAL_LIB_PATH=${CUSTOM_LIB_DIR}/go/internal
+    PYTHON_LIB_PATH=/root/python \
+    R_LIB_PATH=/root/r \
+    GOLANG_LIB_PATH=/root/go/custom
 
 USER root
 
@@ -23,11 +21,10 @@ RUN conda update --yes -n base conda && \
         bokeh \
         pandas \
         numba \
+        cython \
         statsmodels \
         scikit-learn \
-        networkx 
-    
-RUN conda clean --all --yes && \
+        networkx && \
     rm -rf /tmp/* \
         /opt/conda/pkgs/* \
         /root/.wget-hsts \

@@ -4,21 +4,19 @@ FROM kentwait/rpygo-datascience-notebook:latest
 LABEL version="1.0"
 LABEL maintainer="Kent Kawashima <kentkawashima@gmail.com>"
 
-ENV NOTEBOOK_DIR=/notebooks \
-    CUSTOM_LIB_DIR=/root \
-    TF_BINARY=tensorflow \
-    TF_TYPE=cpu \
+ENV TF_BINARY="tensorflow" \
+    TF_TYPE="cpu" \
     TF_VERSION=1.7.0 \
-    TF_ARCH=linux_x86_64
-ENV PYTHON_LIB_PATH=${CUSTOM_LIB_DIR}/python \
-    R_LIB_PATH=${CUSTOM_LIB_DIR}/r \
-    GOLANG_LIB_PATH=${CUSTOM_LIB_DIR}/go/custom \
-    GOLANG_INTERNAL_LIB_PATH=${CUSTOM_LIB_DIR}/go/internal \
-    TF_PYTHON_BINARY_URL="https://storage.googleapis.com/tensorflow/linux/cpu/${TF_BINARY}-${TF_VERSION}-cp36-cp36m-${TF_ARCH}.whl"
+    TF_ARCH="linux_x86_64" \
+    NOTEBOOK_DIR=/notebooks \
+    PYTHON_LIB_PATH=/root/python \
+    R_LIB_PATH=/root/r \
+    GOLANG_LIB_PATH=/root/go/custom
+    
 USER root
 
 WORKDIR /tmp
-RUN pip install --ignore-installed --upgrade ${TF_PYTHON_BINARY_URL} && \
+RUN pip install --ignore-installed --upgrade "https://storage.googleapis.com/tensorflow/linux/cpu/${TF_BINARY}-${TF_VERSION}-cp36-cp36m-${TF_ARCH}.whl" && \
     curl -L "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-${TF_TYPE}-$(go env GOOS)-x86_64-${TF_VERSION}.tar.gz" | \
     tar -C /usr/local -xz && \
     ldconfig && \
@@ -28,10 +26,9 @@ RUN pip install --ignore-installed --upgrade ${TF_PYTHON_BINARY_URL} && \
         pillow && \
     conda install --yes -c conda-forge \
         opencv \
-        dlib
-RUN go get github.com/tensorflow/tensorflow/tensorflow/go && \
+        dlib && \
+    go get github.com/tensorflow/tensorflow/tensorflow/go && \
     go test github.com/tensorflow/tensorflow/tensorflow/go && \
-    conda clean --all --yes && \
     rm -rf /tmp/* \
         /opt/conda/pkgs/* \
         /root/.wget-hsts \

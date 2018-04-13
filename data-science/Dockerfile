@@ -24,7 +24,8 @@ RUN conda update --yes -n base conda && \
         pandas \
         numba \
         statsmodels \
-        scikit-learn
+        scikit-learn \
+        networkx 
     
 RUN conda clean --all --yes && \
     rm -rf /tmp/* \

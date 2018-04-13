@@ -1,11 +1,20 @@
 # rpygo-notebook
 
+rpygo-notebook is a dockerized Jupyter notebook that allows you to run Python 3, R, and Go code within the Jupyter notebook interface.
+
 rpygo-notebook has three variants:
 - [minimal](#Minimal-container)
 - [data-science](#Data-science-container)
 - [tensorflow](#Tensorflow-container)
 
 All versions has [Jupyter] notebook installed, and can run Python 3, R (using [IRKernel]), and Golang (using [gophernotes]) within the notebook interface.
+
+Note that not all Golang syntax works within the notebook.
+The biggest things missing are support for unexported struct fields and interfaces.
+The complete list of limitations can be found at https://github.com/gopherdata/gophernotes#limitations
+
+
+---
 
 ## Minimal container
 

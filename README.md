@@ -13,9 +13,6 @@ Note that not all Golang syntax works within the notebook.
 The biggest things missing are support for unexported struct fields and interfaces.
 The complete list of limitations can be found at https://github.com/gopherdata/gophernotes#limitations
 
-
----
-
 ## Minimal container
 
 The minimal version has `ipython` and `jupyter` Python packages installed,
@@ -60,6 +57,19 @@ Additional Python libraries
 Download the container using the following command
 
 	docker pull kentwait/rpygo-tensorflow-notebook
+
+## Adding third-party libraries
+
+Third-party libraries for Python, R, and Go can be added by adding it within the container and commiting the change.
+
+Another method is to place additional Python, R, and Go libraries into Python, R, and Go custom library folders respectively. Then, bind-mount these custom library folders to the following volume endpoints
+- Python: /root/python
+- R: /root/r
+- Go: /root/go
+
+For example, additional Python 3.6 libraries placed in /path/to/custom/python can be added by bind-mounting:
+
+	docker run -it -v /Users/kent/notebooks/:/notebooks/ -v /path/to/custom/python:/root/python -p 8887:8888 kentwait/rpygo-datascience-notebook
 
 
 [Jupyter]: http://jupyter.org

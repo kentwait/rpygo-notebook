@@ -1,4 +1,4 @@
-FROM kentwait/rpygo-notebook:latest
+FROM kentwait/rpygo-datascience-notebook:latest
 
 # rpygo-notebook metadata
 LABEL version="1.0"

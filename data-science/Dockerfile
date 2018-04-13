@@ -20,6 +20,7 @@ RUN conda update --yes -n base conda && \
         scipy \
         matplotlib \
         seaborn \
+        bokeh \
         pandas \
         numba \
         statsmodels \

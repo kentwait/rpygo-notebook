@@ -63,13 +63,17 @@ Download the container using the following command
 Third-party libraries for Python, R, and Go can be added by adding it within the container and commiting the change.
 
 Another method is to place additional Python, R, and Go libraries into Python, R, and Go custom library folders respectively. Then, bind-mount these custom library folders to the following volume endpoints
-- Python: /root/python
-- R: /root/r
-- Go: /root/go
+- Python: `/root/python`
+- R: `/root/r`
+- Go: `/root/go`
 
-For example, additional Python 3.6 libraries placed in /path/to/custom/python can be added by bind-mounting:
+For example, additional Python 3.6 libraries placed in `/path/to/custom/python` can be added by bind-mounting to `/root/python`:
 
-	docker run -it -v /Users/kent/notebooks/:/notebooks/ -v /path/to/custom/python:/root/python -p 8887:8888 kentwait/rpygo-datascience-notebook
+	docker run -it \
+	-v /Users/kent/notebooks/:/notebooks/ \
+	-v /path/to/custom/python:/root/python \
+	-p 8887:8888 \
+	kentwait/rpygo-datascience-notebook
 
 
 [Jupyter]: http://jupyter.org

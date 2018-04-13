@@ -1,4 +1,4 @@
-FROM kentwait/rpygo-notebook:data-science
+FROM kentwait/rpygo-notebook:latest
 
 # rpygo-notebook metadata
 LABEL version="1.0"
@@ -27,8 +27,8 @@ RUN pip install --ignore-installed --upgrade ${TF_PYTHON_BINARY_URL} && \
         scikit-image \
         pillow && \
     conda install --yes -c conda-forge \
-    opencv \
-    dlib
+        opencv \
+        dlib
 RUN go get github.com/tensorflow/tensorflow/tensorflow/go && \
     go test github.com/tensorflow/tensorflow/tensorflow/go && \
     conda clean --all --yes && \

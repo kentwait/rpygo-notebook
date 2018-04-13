@@ -26,9 +26,9 @@ RUN pip install --ignore-installed --upgrade ${TF_PYTHON_BINARY_URL} && \
     conda install --yes \
         scikit-image \
         pillow && \
-    conda install --yes -c menpo \
-        dlib \
-        opencv && \
+    conda install --yes -c conda-forge \
+    opencv \
+    dlib
 RUN go get github.com/tensorflow/tensorflow/tensorflow/go && \
     go test github.com/tensorflow/tensorflow/tensorflow/go && \
     conda clean --all --yes && \

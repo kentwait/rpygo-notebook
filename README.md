@@ -52,8 +52,10 @@ The tensorflow version is built on top of the data science container adds the fo
 - tensorflow in Go
 
 Additional Python libraries
-- scikit-image
-- pillow (PIL)
+- scikit-image - computer vision
+- pillow (PIL) - image manipulation
+- opencv - computer vision
+- dlib - computer vision and machine learning
 
 Download the container using the following command
 

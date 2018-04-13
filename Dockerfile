@@ -2,33 +2,32 @@
 FROM kentwait/docker-openmpi:latest
 
 # rpygo-notebook metadata
-LABEL version="0.1"
+LABEL version="2.0"
 LABEL maintainer="Kent Kawashima <kentkawashima@gmail.com>"
 
 # Conda variables
-ENV CONDA_PYTHON_VERSION=3
-ENV CONDA_DIR=/opt/conda
-ENV CONDA_VERSION=latest
-ENV CONDA_ARCH=Linux-x86_64
-
+ENV CONDA_PYTHON_VERSION=3 \
+    CONDA_DIR=/opt/conda \
+    CONDA_VERSION=latest \
+    CONDA_ARCH=Linux-x86_64 \
 # Golang variables
-ENV GOLANG_VERSION=1.10.1
-ENV GOLANG_ARCH=linux-amd64
+    GOLANG_VERSION=1.10.1 \
+    GOLANG_ARCH=linux-amd64 \
+# Custom paths
+    NOTEBOOK_DIR=/notebooks \
+    CUSTOM_LIB_DIR=/root
 
 # Additional paths
-ENV NOTEBOOK_DIR=/notebooks
-ENV CUSTOM_LIB_DIR=/root
-ENV PYTHON_LIB_PATH=${CUSTOM_LIB_DIR}/python
-ENV R_LIB_PATH=${CUSTOM_LIB_DIR}/r
-ENV GOLANG_LIB_PATH=${CUSTOM_LIB_DIR}/go/custom
-ENV GOLANG_INTERNAL_LIB_PATH=${CUSTOM_LIB_DIR}/go/internal
-
+ENV PYTHON_LIB_PATH=${CUSTOM_LIB_DIR}/python \
+    R_LIB_PATH=${CUSTOM_LIB_DIR}/r \
+    GOLANG_LIB_PATH=${CUSTOM_LIB_DIR}/go/custom \
+    GOLANG_INTERNAL_LIB_PATH=${CUSTOM_LIB_DIR}/go/internal \
 # Language-specific paths
-ENV PYTHONPATH=${PYTHON_LIB_PATH}
-ENV GOROOT=/usr/local/go
-ENV GOPATH=${GOLANG_INTERNAL_LIB_PATH}:${GOLANG_LIB_PATH}
-# ENV R_LIBS_SITE=${R_LIB_PATH}
-
+    PYTHONPATH=${PYTHON_LIB_PATH} \
+    GOROOT=/usr/local/go \
+    GOPATH=${GOLANG_INTERNAL_LIB_PATH}:${GOLANG_LIB_PATH}
+    # R_LIBS_SITE=${R_LIB_PATH}
+    
 # Path
 ENV PATH=${PYTHON_LIB_PATH}:${R_LIB_PATH}:${CONDA_DIR}/bin:${PATH}:${GOROOT}/bin:${GOLANG_INTERNAL_LIB_PATH}/bin:${GOLANG_LIB_PATH}/bin
 
@@ -98,10 +97,10 @@ RUN R -e "install.packages(c('crayon', 'pbdZMQ', 'devtools'))" && \
         /root/.[acpw]*
 
 EXPOSE 8888
-VOLUME ${PYTHON_LIB_PATH}
-VOLUME ${R_LIB_PATH}
-VOLUME ${GOLANG_LIB_PATH}
-VOLUME ${NOTEBOOK_DIR}
+VOLUME ${PYTHON_LIB_PATH} \
+    ${R_LIB_PATH} \
+    ${GOLANG_LIB_PATH} \
+    ${NOTEBOOK_DIR}
 
 WORKDIR ${NOTEBOOK_DIR}
 
